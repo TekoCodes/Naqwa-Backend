@@ -17,7 +17,7 @@ db_user = "TekoCodes"
 db_password = "IQdi4eepCgtBKiBj7KVy8BYjq8SIgqweV1BMdkFMWuEfxpTlIODtcY6zc3MA5c6F"
 db_host = "164.68.97.131"
 db_port = "5432"
-db_name = "academytest"
+db_name = "ramez"
 
 # Use postgresql:// instead of postgresql+psycopg2:// for compatibility
 database_url = f"postgresql+psycopg2://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"

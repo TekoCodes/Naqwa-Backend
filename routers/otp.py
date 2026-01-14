@@ -94,10 +94,10 @@ def send_verification_email(receiver_email: str, verification_code: str):
         # if email authentication is enabled
         # server.login(sender, "PASSWORD")
         server.sendmail(sender, receiver_email, msg.as_string())
-        print("✅ Verification email sent successfully")
+        logging.info(f"Verification email sent successfully to {receiver_email}")
         return True
     except Exception as e:
-        print(f"❌ Error sending email: {e}")
+        logging.error(f"Error sending email to {receiver_email}: {e}")
         return False
     finally:
         server.quit()
@@ -121,12 +121,15 @@ database = "project"
 engine = create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}")
 
 
+# OTP settings
+OTP_EXPIRE_MINUTES = 5
+
 # JWT settings
 SECRET_KEY = "mysecretkey123"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-# APIRouter for users
+# APIRouter for OTP
 router = APIRouter()
 
 # Function to create JWT
@@ -137,24 +140,57 @@ def create_jwt_token(email):
     logging.info(f"JWT token created for user: {email}")
     return token
 
-# Login endpoint
+# Send OTP endpoint
 @router.post("/send-otp")
-def send_otp(email: str,):
-    logging.info(f"send otp attempt for email: {email}")
-    code = random.randint(100000, 999999)
+def send_otp(email: str):
+    logging.info(f"Send OTP attempt for email: {email}")
     
-    code_status = send_verification_email(email, code)
-    if code_status:
-        logging.info(f"OTP code sent to email: {email}")
-        return {
-            "success": True,
-            "message": "OTP code sent to email"
-        }
-    else:
-        logging.error(f"Error sending OTP code to email: {email}")
-        return {
-            "success": False,
-            "message": "Error sending OTP code to email"
-        }
+    # Generate 6-digit OTP code
+    code = str(random.randint(100000, 999999))
+    
+    # Calculate expiration time (5 minutes from now)
+    expires_at = datetime.utcnow() + timedelta(minutes=OTP_EXPIRE_MINUTES)
+    
+    try:
+        # Save OTP code to database
+        with engine.begin() as connection:
+            # Mark old OTP codes as used for this email
+            connection.execute(
+                text("UPDATE public.otp_codes SET used = TRUE WHERE email = :email AND used = FALSE"),
+                {"email": email}
+            )
+            
+            # Insert new OTP code
+            connection.execute(
+                text("""
+                    INSERT INTO public.otp_codes (email, code, expires_at, created_at, used)
+                    VALUES (:email, :code, :expires_at, :created_at, FALSE)
+                """),
+                {
+                    "email": email,
+                    "code": code,
+                    "expires_at": expires_at,
+                    "created_at": datetime.utcnow()
+                }
+            )
+        
+        # Send verification email
+        code_status = send_verification_email(email, code)
+        
+        if code_status:
+            logging.info(f"OTP code sent successfully to email: {email}")
+            return {
+                "success": True,
+                "message": "OTP code sent to email"
+            }
+        else:
+            logging.error(f"Error sending OTP code to email: {email}")
+            raise HTTPException(status_code=500, detail="Error sending OTP code to email")
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Error processing OTP request for email {email}: {e}")
+        raise HTTPException(status_code=500, detail="Error processing OTP request")
 
 

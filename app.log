@@ -7,3 +7,5 @@
 2025-12-26 14:38:36,157 - WARNING - Login failed: incorrect password for email ramez@example.com
 2025-12-26 14:38:44,680 - INFO - Login attempt for email: ramez@exampl3e.com
 2025-12-26 14:38:44,724 - WARNING - Login failed: user not found for email ramez@exampl3e.com
+2026-01-14 16:02:56,065 - INFO - send otp attempt for email: ramezfanous1@gmail.com
+

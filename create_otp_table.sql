@@ -14,3 +14,4 @@ CREATE INDEX IF NOT EXISTS idx_otp_codes_email ON public.otp_codes(email);
 -- Create index on expires_at for cleanup operations
 CREATE INDEX IF NOT EXISTS idx_otp_codes_expires_at ON public.otp_codes(expires_at);
 
+

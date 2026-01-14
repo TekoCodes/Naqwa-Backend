@@ -70,25 +70,67 @@ def login(email: str, password: str):
             "token_type": "bearer"
         }
 
-# # -----------------------------
-# # Add new user endpoint
-# # -----------------------------
-# @router.post("/register")
-# def add_user(first_name: str, last_name: str, email: str, password: str):
-#     logging.info(f"Add user attempt: {email}")
-#     with engine.begin() as connection:  # commit automatically
-#         connection.execute(
-#             text("""
-#                 INSERT INTO public.users (first_name, last_name, email, password_hash, created_at)
-#                 VALUES (:first_name, :last_name, :email, :password_hash, :created_at)
-#             """),
-#             {
-#                 "first_name": first_name,
-#                 "last_name": last_name,
-#                 "email": email,
-#                 "password_hash": password,
-#                 "created_at": datetime.utcnow()
-#             }
-#         )
-#     logging.info(f"User added successfully: {email}")
-#     return {"message": "User added successfully"}
+# -----------------------------
+# Add new user endpoint
+# -----------------------------
+@router.post("/register")
+def add_user(first_name: str, last_name: str, email: str, password: str, otp: str):
+    logging.info(f"Add user attempt: {email}")
+    
+    # Validate OTP before creating user
+    with engine.connect() as connection:
+        # Check if OTP exists and is valid
+        otp_record = connection.execute(
+            text("""
+                SELECT * FROM public.otp_codes 
+                WHERE email = :email 
+                AND code = :otp 
+                AND used = FALSE
+                AND expires_at > :current_time
+            """),
+            {
+                "email": email,
+                "otp": otp,
+                "current_time": datetime.utcnow()
+            }
+        ).mappings().fetchone()
+        
+        if not otp_record:
+            logging.warning(f"Invalid or expired OTP for email: {email}")
+            raise HTTPException(
+                status_code=400, 
+                detail="Invalid or expired OTP code. Please request a new OTP."
+            )
+    
+    # OTP is valid, create user account
+    with engine.begin() as connection:  # commit automatically
+        # Mark OTP as used
+        connection.execute(
+            text("""
+                UPDATE public.otp_codes 
+                SET used = TRUE 
+                WHERE email = :email 
+                AND code = :otp
+            """),
+            {
+                "email": email,
+                "otp": otp
+            }
+        )
+        
+        # Create user account
+        connection.execute(
+            text("""
+                INSERT INTO public.users (first_name, last_name, email, password_hash, created_at)
+                VALUES (:first_name, :last_name, :email, :password_hash, :created_at)
+            """),
+            {
+                "first_name": first_name,
+                "last_name": last_name,
+                "email": email,
+                "password_hash": password,
+                "created_at": datetime.utcnow()
+            }
+        )
+    logging.info(f"User added successfully: {email}")
+    return {"message": "User added successfully"}

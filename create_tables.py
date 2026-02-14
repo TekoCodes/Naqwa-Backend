@@ -13,16 +13,60 @@ logging.basicConfig(
 
 # Database connection
 # postgres://TekoCodes:IQdi4eepCgtBKiBj7KVy8BYjq8SIgqweV1BMdkFMWuEfxpTlIODtcY6zc3MA5c6F@164.68.97.131:5432/academytest
-db_user = "TekoCodes"
-db_password = "IQdi4eepCgtBKiBj7KVy8BYjq8SIgqweV1BMdkFMWuEfxpTlIODtcY6zc3MA5c6F"
-db_host = "164.68.97.131"
+db_user = "postgres"
+db_password = "x4IQEBxzpSwDSUIcYxqNfsuEY40jzdrTP5AMKWiDppbAY4kevp0KeL3odvWHqhfE"
+db_host = "37.60.236.213"
 db_port = "5432"
-db_name = "ramez"
+db_name = "naqwa"
 
 # Use postgresql:// instead of postgresql+psycopg2:// for compatibility
 database_url = f"postgresql+psycopg2://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
 engine = create_engine(database_url)
 
+
+def create_grades_table():
+    """Create grades table and insert default grades if it doesn't exist"""
+    try:
+        with engine.begin() as connection:
+            # Create grades table
+            connection.execute(text("""
+                CREATE TABLE IF NOT EXISTS public.grades (
+                    id SERIAL PRIMARY KEY,
+                    name VARCHAR(50) NOT NULL UNIQUE,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """))
+            
+            # Insert default grades if they don't exist
+            grades = [
+                "first primary",
+                "second primary",
+                "third primary",
+                "fourth primary",
+                "fifth primary",
+                "sixth primary",
+                "first prep",
+                "second prep",
+                "third prep",
+                "first secondary",
+                "second secondary",
+                "third secondary"
+            ]
+            
+            for grade in grades:
+                connection.execute(text("""
+                    INSERT INTO public.grades (name)
+                    VALUES (:grade)
+                    ON CONFLICT (name) DO NOTHING
+                """), {"grade": grade})
+            
+        logging.info("Grades table created or already exists")
+        print("Grades table created or already exists")
+        return True
+    except Exception as e:
+        logging.error(f"Error creating grades table: {e}")
+        print(f"Error creating grades table: {e}")
+        return False
 
 def create_users_table():
     """Create users table if it doesn't exist"""
@@ -31,18 +75,27 @@ def create_users_table():
             connection.execute(text("""
                 CREATE TABLE IF NOT EXISTS public.users (
                     id SERIAL PRIMARY KEY,
-                    first_name VARCHAR(255) NOT NULL,
-                    last_name VARCHAR(255) NOT NULL,
-                    email VARCHAR(255) UNIQUE NOT NULL,
-                    password_hash VARCHAR(255) NOT NULL,
+                    name VARCHAR(255) NOT NULL,
+                    phone_number VARCHAR(20) NOT NULL,
+                    parent_number VARCHAR(20),
+                    birth_date DATE,
+                    governorate VARCHAR(100),
+                    password VARCHAR(255) NOT NULL,
+                    grade VARCHAR(50),
+                    section VARCHAR(50),
+                    account_status VARCHAR(50) NOT NULL DEFAULT 'active',
+                    points INTEGER DEFAULT 0,
+                    early_access BOOLEAN DEFAULT FALSE,
+                    subscription_plan VARCHAR(50) DEFAULT 'free',
+                    role VARCHAR(50) DEFAULT 'student',
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """))
             
-            # Create index on email for faster lookups
+            # Create index on phone_number for faster lookups
             connection.execute(text("""
-                CREATE INDEX IF NOT EXISTS idx_users_email 
-                ON public.users(email)
+                CREATE INDEX IF NOT EXISTS idx_users_phone_number 
+                ON public.users(phone_number)
             """))
             
         logging.info("Users table created or already exists")
@@ -53,57 +106,291 @@ def create_users_table():
         print(f"Error creating users table: {e}")
         return False
 
-
-def create_otp_codes_table():
-    """Create OTP codes table if it doesn't exist"""
+def create_sessions_table():
+    """Create sessions table if it doesn't exist"""
     try:
         with engine.begin() as connection:
-            # Create table if not exists
             connection.execute(text("""
-                CREATE TABLE IF NOT EXISTS public.otp_codes (
+                CREATE TABLE IF NOT EXISTS public.sessions (
                     id SERIAL PRIMARY KEY,
-                    email VARCHAR(255) NOT NULL,
-                    code VARCHAR(6) NOT NULL,
-                    expires_at TIMESTAMP NOT NULL,
+                    user_id INTEGER NOT NULL,
+                    session VARCHAR(500) NOT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    used BOOLEAN DEFAULT FALSE
+                    active BOOLEAN DEFAULT TRUE,
+                    FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
                 )
             """))
             
-            # Create indexes if not exist
+            # Create index on user_id for faster lookups
             connection.execute(text("""
-                CREATE INDEX IF NOT EXISTS idx_otp_codes_email 
-                ON public.otp_codes(email)
+                CREATE INDEX IF NOT EXISTS idx_sessions_user_id 
+                ON public.sessions(user_id)
             """))
             
+            # Create index on session for faster lookups
             connection.execute(text("""
-                CREATE INDEX IF NOT EXISTS idx_otp_codes_expires_at 
-                ON public.otp_codes(expires_at)
+                CREATE INDEX IF NOT EXISTS idx_sessions_session 
+                ON public.sessions(session)
             """))
             
-        logging.info("OTP codes table created or already exists")
-        print("OTP codes table created or already exists")
+        logging.info("Sessions table created or already exists")
+        print("Sessions table created or already exists")
         return True
     except Exception as e:
-        logging.error(f"Error creating OTP codes table: {e}")
-        print(f"Error creating OTP codes table: {e}")
+        logging.error(f"Error creating sessions table: {e}")
+        print(f"Error creating sessions table: {e}")
         return False
 
+def create_admins_table():
+    """Create admins table if it doesn't exist"""
+    try:
+        with engine.begin() as connection:
+            connection.execute(text("""
+                CREATE TABLE IF NOT EXISTS public.admins (
+                    id SERIAL PRIMARY KEY,
+                    name VARCHAR(255) NOT NULL,
+                    phone_number VARCHAR(20) NOT NULL UNIQUE,
+                    password VARCHAR(255) NOT NULL,
+                    role VARCHAR(50) NOT NULL DEFAULT 'admin',
+                    account_status VARCHAR(50) NOT NULL DEFAULT 'active',
+                    created_at TIMESTAMP DEFAULT now()
+                )
+            """))
+        logging.info("Admins table created or already exists")
+        print("Admins table created or already exists")
+    except Exception as e:
+        logging.error(f"Error creating admins table: {e}")
+        print(f"Error creating admins table: {e}")
 
-def create_all_tables():
-    """Create all database tables"""
-    print("Starting database tables creation...")
-    users_success = create_users_table()
-    otp_success = create_otp_codes_table()
-    
-    if users_success and otp_success:
-        print("All tables created successfully!")
-        return True
-    else:
-        print("Some tables failed to create. Check logs for details.")
-        return False
+def create_subjects_table():
+    try:
+        with engine.begin() as connection:
+            connection.execute(text("""
+                CREATE TABLE IF NOT EXISTS public.subjects (
+                    id SERIAL PRIMARY KEY,
+                    name TEXT,
+                    grade TEXT,
+                    stream TEXT,
+                    created_at TIMESTAMP DEFAULT now()
+                )
+            """))
+        logging.info("Subjects table created or already exists")
+        print("Subjects table created or already exists")
+    except Exception as e:
+        logging.error(f"Error creating subjects table: {e}")
+        print(f"Error creating subjects table: {e}")
 
+def create_chapters_table():
+    try:
+        with engine.begin() as connection:
+            connection.execute(text("""
+                CREATE TABLE IF NOT EXISTS public.chapters (
+                    id SERIAL PRIMARY KEY,
+                    subject_id INTEGER REFERENCES public.subjects(id),
+                    name TEXT,
+                    order_index INT,
+                    created_at TIMESTAMP DEFAULT now()
+                )
+            """))
+        logging.info("Chapters table created or already exists")
+        print("Chapters table created or already exists")
+    except Exception as e:
+        logging.error(f"Error creating chapters table: {e}")
+        print(f"Error creating chapters table: {e}")
 
-if __name__ == "__main__":
-    create_all_tables()
+def create_sources_table():
+    try:
+        with engine.begin() as connection:
+            connection.execute(text("""
+                CREATE TABLE IF NOT EXISTS public.sources (
+                    id SERIAL PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    source_type TEXT NOT NULL,
+                    year INT,
+                    grade TEXT,
+                    author_name TEXT,
+                    published_at DATE,
+                    created_by INTEGER NOT NULL REFERENCES public.users(id),
+                    notes TEXT,
+                    created_at TIMESTAMP DEFAULT now()
+                )
+            """))
+        logging.info("Sources table created or already exists")
+        print("Sources table created or already exists")
+    except Exception as e:
+        logging.error(f"Error creating sources table: {e}")
+        print(f"Error creating sources table: {e}")
 
+def create_questions_table():
+    # correct_answer TEXT NOT NULL,
+    try:
+        with engine.begin() as connection:
+            connection.execute(text("""
+                CREATE TABLE IF NOT EXISTS public.questions (
+                    id SERIAL PRIMARY KEY,
+                    subject_id INTEGER NOT NULL REFERENCES public.subjects(id),
+                    chapter_id INTEGER REFERENCES public.chapters(id),
+                    question_text TEXT,
+                    question_image_url TEXT,
+                    question_type TEXT NOT NULL,
+                    difficulty INT CHECK (difficulty BETWEEN 1 AND 5),
+                    expected_time INT,
+                    explanation TEXT,
+                    order_index INT,
+                    access_level TEXT DEFAULT 'paid',
+                    source_id INTEGER REFERENCES public.sources(id),
+                    is_common BOOLEAN DEFAULT false,
+                    status TEXT DEFAULT 'active',
+                    created_by INTEGER NOT NULL REFERENCES public.users(id),
+                    reviewed_by INTEGER REFERENCES public.users(id),
+                    reviewed_at TIMESTAMP,
+                    created_at TIMESTAMP DEFAULT now(),
+                    updated_at TIMESTAMP DEFAULT now()
+                )
+            """))
+        logging.info("Questions table created or already exists")
+        print("Questions table created or already exists")
+    except Exception as e:
+        logging.error(f"Error creating questions table: {e}")
+        print(f"Error creating questions table: {e}")
+
+def create_question_reports_table():
+    try:
+        with engine.begin() as connection:
+            connection.execute(text("""
+                CREATE TABLE IF NOT EXISTS public.question_reports (
+                    id SERIAL PRIMARY KEY,
+                    user_id INTEGER REFERENCES public.users(id),
+                    question_id INTEGER REFERENCES public.questions(id),
+                    reason TEXT,
+                    note TEXT,
+                    created_at TIMESTAMP DEFAULT now()
+                )
+            """))
+        logging.info("Question reports table created or already exists")
+        print("Question reports table created or already exists")
+    except Exception as e:
+        logging.error(f"Error creating question_reports table: {e}")
+        print(f"Error creating question_reports table: {e}")
+
+def create_question_choices_table():
+
+    """Create question_choices table if it doesn't exist"""
+    try:
+        with engine.begin() as connection:
+            connection.execute(text("""
+                CREATE TABLE IF NOT EXISTS public.question_choices (
+                    id SERIAL PRIMARY KEY,
+                    question_id INTEGER REFERENCES public.questions(id),
+                    text TEXT NOT NULL,
+                    is_correct BOOLEAN DEFAULT FALSE,
+                    "order" INTEGER,
+                    created_at TIMESTAMP DEFAULT now()
+                )
+            """))
+        logging.info("question_choices table created or already exists")
+        print("question_choices table created or already exists")
+    except Exception as e:
+        logging.error(f"Error creating question_choices table: {e}")
+        print(f"Error creating question_choices table: {e}")
+
+def create_questions_submissions_table():
+    """Create questions_submissions table if it doesn't exist"""
+    try:
+        with engine.begin() as connection:
+            connection.execute(text("""
+                CREATE TABLE IF NOT EXISTS public.questions_submissions (
+                    id SERIAL PRIMARY KEY,
+                    user_id INTEGER NOT NULL REFERENCES public.users(id),
+                    question_id INTEGER NOT NULL REFERENCES public.questions(id),
+                    status TEXT,
+                    auto_score FLOAT,
+                    manual_score FLOAT,
+                    total_score FLOAT,
+                    max_score FLOAT,
+                    started_at TIMESTAMP,
+                    submitted_at TIMESTAMP,
+                    graded_at TIMESTAMP,
+                    created_at TIMESTAMP DEFAULT now(),
+                    updated_at TIMESTAMP DEFAULT now()
+                )
+            """))
+        logging.info("questions_submissions table created or already exists")
+        print("questions_submissions table created or already exists")
+    except Exception as e:
+        logging.error(f"Error creating questions_submissions table: {e}")
+        print(f"Error creating questions_submissions table: {e}")
+def create_exams_table():
+
+    """Create exams table if it doesn't exist"""
+    try:
+        with engine.begin() as connection:
+            connection.execute(text("""
+                CREATE TABLE IF NOT EXISTS public.exams (
+                    id SERIAL PRIMARY KEY,
+                    title TEXT NOT NULL,
+                    description TEXT,
+                    lecture_id INTEGER,
+                    course_id INTEGER,
+                    duration INTEGER,
+                    num_to_show INTEGER,
+                    shuffle_questions BOOLEAN DEFAULT FALSE,
+                    shuffle_options BOOLEAN DEFAULT FALSE,
+                    required BOOLEAN DEFAULT FALSE,
+                    is_active BOOLEAN DEFAULT TRUE,
+                    created_at TIMESTAMP DEFAULT now(),
+                    updated_at TIMESTAMP DEFAULT now()
+                )
+            """))
+        logging.info("exams table created or already exists")
+        print("exams table created or already exists")
+    except Exception as e:
+        logging.error(f"Error creating exams table: {e}")
+        print(f"Error creating exams table: {e}")
+def create_exams_questions_table():
+    """Create exams_questions table if it doesn't exist"""
+    try:
+        with engine.begin() as connection:
+            connection.execute(text("""
+                CREATE TABLE IF NOT EXISTS public.exams_questions (
+                    id SERIAL PRIMARY KEY,
+                    exam_id INTEGER NOT NULL REFERENCES public.exams(id),
+                    subject_id INTEGER NOT NULL REFERENCES public.subjects(id),
+                    chapter_id INTEGER REFERENCES public.chapters(id),
+                    question_text TEXT,
+                    question_image_url TEXT,
+                    question_type TEXT NOT NULL,
+                    difficulty INT CHECK (difficulty BETWEEN 1 AND 5),
+                    expected_time INT,
+                    explanation TEXT,
+                    order_index INT,
+                    access_level TEXT DEFAULT 'paid',
+                    source_id INTEGER REFERENCES public.sources(id),
+                    is_common BOOLEAN DEFAULT false,
+                    status TEXT DEFAULT 'active',
+                    created_by INTEGER NOT NULL REFERENCES public.users(id),
+                    reviewed_by INTEGER REFERENCES public.users(id),
+                    reviewed_at TIMESTAMP,
+                    created_at TIMESTAMP DEFAULT now(),
+                    updated_at TIMESTAMP DEFAULT now()
+                )
+            """))
+        logging.info("exams_questions table created or already exists")
+        print("exams_questions table created or already exists")
+    except Exception as e:
+        logging.error(f"Error creating exams_questions table: {e}")
+        print(f"Error creating exams_questions table: {e}")
+
+create_grades_table()
+create_users_table()
+create_sessions_table()
+create_admins_table()  # Call this to ensure admins table exists
+create_subjects_table()
+create_chapters_table()
+create_sources_table()
+create_questions_table()
+create_question_reports_table()
+create_question_choices_table()  # Call this to ensure question_choices table exists
+create_questions_submissions_table()  # Call this to ensure questions_submissions table exists
+create_exams_table()  # Call this to ensure exams table exists
+create_exams_questions_table()  # Call this to ensure exams_questions table exists

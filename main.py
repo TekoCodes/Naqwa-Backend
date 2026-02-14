@@ -1,12 +1,13 @@
 from fastapi import FastAPI
-from routers import users
-from routers import otp
+from routers import login, register, forgot_password, admin_register
 import uvicorn
 
 app = FastAPI(title="My API")
 
-app.include_router(users.router, prefix="/api/v1/users")
-app.include_router(otp.router, prefix="/api/v1/otp")
+app.include_router(login.router, prefix="/api/v1")
+app.include_router(register.router, prefix="/api/v1")
+app.include_router(forgot_password.router, prefix="/api/v1")
+app.include_router(admin_register.router, prefix="/api/v1")
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",

@@ -1,17 +1,97 @@
-2025-12-26 14:33:39,240 - INFO - Login attempt for email: ramez@example.com
-2025-12-26 14:34:32,675 - INFO - Login attempt for email: ramez@example.com
-2025-12-26 14:37:55,607 - INFO - Login attempt for email: ramez@example.com
-2025-12-26 14:37:55,671 - INFO - JWT token created for user: ramez@example.com
-2025-12-26 14:37:55,671 - INFO - Login successful for email: ramez@example.com
-2025-12-26 14:38:36,089 - INFO - Login attempt for email: ramez@example.com
-2025-12-26 14:38:36,157 - WARNING - Login failed: incorrect password for email ramez@example.com
-2025-12-26 14:38:44,680 - INFO - Login attempt for email: ramez@exampl3e.com
-2025-12-26 14:38:44,724 - WARNING - Login failed: user not found for email ramez@exampl3e.com
-2026-01-14 16:02:56,065 - INFO - send otp attempt for email: ramezfanous1@gmail.com
-
-2026-01-14 17:23:19,607 - INFO - Users table created or already exists
-2026-01-14 17:23:20,223 - INFO - OTP codes table created or already exists
-2026-01-14 19:22:02,622 - INFO - Users table created or already exists
-2026-01-14 19:22:02,932 - INFO - OTP codes table created or already exists
-2026-01-14 19:23:21,098 - INFO - Users table created or already exists
-2026-01-14 19:23:21,443 - INFO - OTP codes table created or already exists
+2026-01-19 01:36:52,456 - INFO - Grades table created or already exists
+2026-01-19 01:36:52,718 - INFO - Users table created or already exists
+2026-01-19 01:36:53,095 - INFO - Sessions table created or already exists
+2026-01-19 01:39:35,396 - INFO - Add user attempt: 01123456789
+2026-01-19 01:39:36,889 - INFO - JWT token created for user_id: 4, role: user
+2026-01-19 01:39:37,089 - INFO - User added successfully: 01123456789, user_id: 4
+2026-01-20 01:58:59,155 - INFO - Grades table created or already exists
+2026-01-20 01:58:59,409 - INFO - Users table created or already exists
+2026-01-20 01:58:59,720 - INFO - Sessions table created or already exists
+2026-01-20 01:58:59,988 - INFO - pgcrypto extension created or already exists
+2026-01-20 01:59:00,219 - INFO - Admins table created or already exists
+2026-01-20 01:59:00,432 - INFO - Subjects table created or already exists
+2026-01-20 01:59:00,642 - INFO - Chapters table created or already exists
+2026-01-20 01:59:00,846 - INFO - Sources table created or already exists
+2026-01-20 01:59:01,060 - INFO - Questions table created or already exists
+2026-01-20 01:59:01,258 - INFO - Question reports table created or already exists
+2026-01-20 02:56:18,897 - INFO - Grades table created or already exists
+2026-01-20 02:56:19,190 - INFO - Users table created or already exists
+2026-01-20 02:56:19,540 - INFO - Sessions table created or already exists
+2026-01-20 02:56:19,761 - INFO - Subjects table created or already exists
+2026-01-20 02:56:19,985 - INFO - Chapters table created or already exists
+2026-01-20 02:56:20,194 - INFO - Sources table created or already exists
+2026-01-20 02:56:20,427 - INFO - Questions table created or already exists
+2026-01-20 02:56:20,638 - INFO - Question reports table created or already exists
+2026-02-13 23:03:03,765 - INFO - Grades table created or already exists
+2026-02-13 23:03:04,158 - INFO - Users table created or already exists
+2026-02-13 23:03:04,660 - INFO - Sessions table created or already exists
+2026-02-13 23:03:04,930 - INFO - Admins table created or already exists
+2026-02-13 23:03:05,138 - INFO - Subjects table created or already exists
+2026-02-13 23:03:05,405 - INFO - Chapters table created or already exists
+2026-02-13 23:03:05,791 - INFO - Sources table created or already exists
+2026-02-13 23:03:06,078 - INFO - Questions table created or already exists
+2026-02-13 23:03:06,331 - INFO - Question reports table created or already exists
+2026-02-13 23:04:30,687 - INFO - Grades table created or already exists
+2026-02-13 23:04:30,986 - INFO - Users table created or already exists
+2026-02-13 23:04:31,688 - INFO - Sessions table created or already exists
+2026-02-13 23:04:31,977 - INFO - Admins table created or already exists
+2026-02-13 23:04:32,176 - INFO - Subjects table created or already exists
+2026-02-13 23:04:32,368 - INFO - Chapters table created or already exists
+2026-02-13 23:04:32,568 - INFO - Sources table created or already exists
+2026-02-13 23:04:32,761 - INFO - Questions table created or already exists
+2026-02-13 23:04:32,966 - INFO - Question reports table created or already exists
+2026-02-13 23:28:42,546 - INFO - Grades table created or already exists
+2026-02-13 23:28:42,819 - INFO - Users table created or already exists
+2026-02-13 23:28:43,179 - INFO - Sessions table created or already exists
+2026-02-13 23:28:43,378 - INFO - Admins table created or already exists
+2026-02-13 23:28:43,596 - INFO - Subjects table created or already exists
+2026-02-13 23:28:43,805 - INFO - Chapters table created or already exists
+2026-02-13 23:28:44,017 - INFO - Sources table created or already exists
+2026-02-13 23:28:44,224 - INFO - Questions table created or already exists
+2026-02-13 23:28:44,429 - INFO - Question reports table created or already exists
+2026-02-14 01:54:07,580 - INFO - Grades table created or already exists
+2026-02-14 01:54:07,849 - INFO - Users table created or already exists
+2026-02-14 01:54:08,174 - INFO - Sessions table created or already exists
+2026-02-14 01:54:08,656 - INFO - Admins table created or already exists
+2026-02-14 01:54:09,132 - INFO - Subjects table created or already exists
+2026-02-14 01:54:09,335 - INFO - Chapters table created or already exists
+2026-02-14 01:54:09,532 - INFO - Sources table created or already exists
+2026-02-14 01:54:09,733 - INFO - Questions table created or already exists
+2026-02-14 01:54:09,957 - INFO - Question reports table created or already exists
+2026-02-14 01:54:10,220 - INFO - question_choices table created or already exists
+2026-02-14 02:38:44,702 - INFO - Grades table created or already exists
+2026-02-14 02:38:44,965 - INFO - Users table created or already exists
+2026-02-14 02:38:45,356 - INFO - Sessions table created or already exists
+2026-02-14 02:38:45,552 - INFO - Admins table created or already exists
+2026-02-14 02:38:45,747 - INFO - Subjects table created or already exists
+2026-02-14 02:38:45,940 - INFO - Chapters table created or already exists
+2026-02-14 02:38:46,136 - INFO - Sources table created or already exists
+2026-02-14 02:38:46,331 - INFO - Questions table created or already exists
+2026-02-14 02:38:46,539 - INFO - Question reports table created or already exists
+2026-02-14 02:38:46,741 - INFO - question_choices table created or already exists
+2026-02-14 02:38:47,135 - INFO - questions_submissions table created or already exists
+2026-02-14 02:50:02,450 - INFO - Grades table created or already exists
+2026-02-14 02:50:02,795 - INFO - Users table created or already exists
+2026-02-14 02:50:03,266 - INFO - Sessions table created or already exists
+2026-02-14 02:50:03,549 - INFO - Admins table created or already exists
+2026-02-14 02:50:03,769 - INFO - Subjects table created or already exists
+2026-02-14 02:50:04,015 - INFO - Chapters table created or already exists
+2026-02-14 02:50:04,322 - INFO - Sources table created or already exists
+2026-02-14 02:50:04,769 - INFO - Questions table created or already exists
+2026-02-14 02:50:05,216 - INFO - Question reports table created or already exists
+2026-02-14 02:50:05,416 - INFO - question_choices table created or already exists
+2026-02-14 02:50:05,632 - INFO - questions_submissions table created or already exists
+2026-02-14 02:50:05,916 - INFO - exams table created or already exists
+2026-02-14 02:54:22,912 - INFO - Grades table created or already exists
+2026-02-14 02:54:23,183 - INFO - Users table created or already exists
+2026-02-14 02:54:23,516 - INFO - Sessions table created or already exists
+2026-02-14 02:54:23,714 - INFO - Admins table created or already exists
+2026-02-14 02:54:23,958 - INFO - Subjects table created or already exists
+2026-02-14 02:54:24,157 - INFO - Chapters table created or already exists
+2026-02-14 02:54:24,356 - INFO - Sources table created or already exists
+2026-02-14 02:54:24,558 - INFO - Questions table created or already exists
+2026-02-14 02:54:24,835 - INFO - Question reports table created or already exists
+2026-02-14 02:54:25,067 - INFO - question_choices table created or already exists
+2026-02-14 02:54:25,272 - INFO - questions_submissions table created or already exists
+2026-02-14 02:54:25,473 - INFO - exams table created or already exists
+2026-02-14 02:54:25,753 - INFO - exams_questions table created or already exists

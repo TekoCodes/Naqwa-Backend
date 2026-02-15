@@ -348,6 +348,7 @@ def create_exams_table():
         logging.error(f"Error creating exams table: {e}")
         print(f"Error creating exams table: {e}")
 def create_exams_questions_table():
+
     """Create exams_questions table if it doesn't exist"""
     try:
         with engine.begin() as connection:
@@ -381,6 +382,54 @@ def create_exams_questions_table():
         logging.error(f"Error creating exams_questions table: {e}")
         print(f"Error creating exams_questions table: {e}")
 
+
+
+def create_exams_submissions_table():
+    """Create exams_submissions table if it doesn't exist"""
+    try:
+        with engine.begin() as connection:
+            connection.execute(text("""
+                CREATE TABLE IF NOT EXISTS public.exams_submissions (
+                    id SERIAL PRIMARY KEY,
+                    user_id INTEGER NOT NULL REFERENCES public.users(id),
+                    exam_id INTEGER NOT NULL REFERENCES public.exams(id),
+                    exam_question_id INTEGER NOT NULL REFERENCES public.exams_questions(id),
+                    status TEXT,
+                    auto_score FLOAT,
+                    manual_score FLOAT,
+                    total_score FLOAT,
+                    max_score FLOAT,
+                    started_at TIMESTAMP,
+                    submitted_at TIMESTAMP,
+                    graded_at TIMESTAMP,
+                    created_at TIMESTAMP DEFAULT now(),
+                    updated_at TIMESTAMP DEFAULT now()
+                )
+            """))
+        logging.info("exams_submissions table created or already exists")
+        print("exams_submissions table created or already exists")
+    except Exception as e:
+        logging.error(f"Error creating exams_submissions table: {e}")
+        print(f"Error creating exams_submissions table: {e}")
+def create_exam_choises_table():
+    """Create exam_choises table if it doesn't exist"""
+    try:
+        with engine.begin() as connection:
+            connection.execute(text("""
+                CREATE TABLE IF NOT EXISTS public.exam_choises (
+                    id SERIAL PRIMARY KEY,
+                    exam_question_id INTEGER REFERENCES public.exams_questions(id),
+                    text TEXT NOT NULL,
+                    is_correct BOOLEAN DEFAULT FALSE,
+                    "order" INTEGER,
+                    created_at TIMESTAMP DEFAULT now()
+                )
+            """))
+        logging.info("exam_choises table created or already exists")
+        print("exam_choises table created or already exists")
+    except Exception as e:
+        logging.error(f"Error creating exam_choises table: {e}")
+        print(f"Error creating exam_choises table: {e}")
 create_grades_table()
 create_users_table()
 create_sessions_table()
@@ -394,3 +443,5 @@ create_question_choices_table()  # Call this to ensure question_choices table ex
 create_questions_submissions_table()  # Call this to ensure questions_submissions table exists
 create_exams_table()  # Call this to ensure exams table exists
 create_exams_questions_table()  # Call this to ensure exams_questions table exists
+create_exams_submissions_table()  # Call this to ensure exams_submissions table exists
+create_exam_choises_table()  # Call this to ensure exam_choises table exists

@@ -95,3 +95,32 @@
 2026-02-14 02:54:25,272 - INFO - questions_submissions table created or already exists
 2026-02-14 02:54:25,473 - INFO - exams table created or already exists
 2026-02-14 02:54:25,753 - INFO - exams_questions table created or already exists
+2026-02-14 14:55:54,032 - INFO - Grades table created or already exists
+2026-02-14 14:55:54,302 - INFO - Users table created or already exists
+2026-02-14 14:55:54,627 - INFO - Sessions table created or already exists
+2026-02-14 14:55:54,819 - INFO - Admins table created or already exists
+2026-02-14 14:55:55,289 - INFO - Subjects table created or already exists
+2026-02-14 14:55:55,482 - INFO - Chapters table created or already exists
+2026-02-14 14:55:55,676 - INFO - Sources table created or already exists
+2026-02-14 14:55:55,870 - INFO - Questions table created or already exists
+2026-02-14 14:55:56,066 - INFO - Question reports table created or already exists
+2026-02-14 14:55:56,268 - INFO - question_choices table created or already exists
+2026-02-14 14:55:56,466 - INFO - questions_submissions table created or already exists
+2026-02-14 14:55:56,658 - INFO - exams table created or already exists
+2026-02-14 14:55:56,853 - INFO - exams_questions table created or already exists
+2026-02-14 14:55:57,090 - INFO - exams_submissions table created or already exists
+2026-02-14 14:58:20,418 - INFO - Grades table created or already exists
+2026-02-14 14:58:20,680 - INFO - Users table created or already exists
+2026-02-14 14:58:21,005 - INFO - Sessions table created or already exists
+2026-02-14 14:58:21,203 - INFO - Admins table created or already exists
+2026-02-14 14:58:21,399 - INFO - Subjects table created or already exists
+2026-02-14 14:58:21,593 - INFO - Chapters table created or already exists
+2026-02-14 14:58:21,788 - INFO - Sources table created or already exists
+2026-02-14 14:58:21,981 - INFO - Questions table created or already exists
+2026-02-14 14:58:22,175 - INFO - Question reports table created or already exists
+2026-02-14 14:58:22,372 - INFO - question_choices table created or already exists
+2026-02-14 14:58:22,565 - INFO - questions_submissions table created or already exists
+2026-02-14 14:58:22,760 - INFO - exams table created or already exists
+2026-02-14 14:58:22,954 - INFO - exams_questions table created or already exists
+2026-02-14 14:58:23,147 - INFO - exams_submissions table created or already exists
+2026-02-14 14:58:23,361 - INFO - exam_choises table created or already exists

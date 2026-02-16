@@ -103,11 +103,17 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     if not hashed_password:
         return False
     if hashed_password.startswith("$2") or hashed_password.startswith("$b$"):
-        # الصيغة الجديدة: bcrypt(sha256(password))
+        # الصيغة الجديدة: bcrypt(sha256(password)) — تتجنب حد 72 بايت
         prepared = _prepare_password_for_bcrypt(plain_password)
-        if pwd_context.verify(prepared, hashed_password):
-            return True
-        # التوافق مع كلمات المرور القديمة: bcrypt(password) مباشرة
+        try:
+            if pwd_context.verify(prepared, hashed_password):
+                return True
+        except Exception:
+            pass
+        # التوافق مع كلمات المرور القديمة: bcrypt(password) — لا نمرر أكثر من 72 بايت
+        plain_bytes = plain_password.encode("utf-8")
+        if len(plain_bytes) > 72:
+            return False  # كلمات المرور القديمة لم تُحفظ بأكثر من 72 بايت
         try:
             return pwd_context.verify(plain_password, hashed_password)
         except Exception:

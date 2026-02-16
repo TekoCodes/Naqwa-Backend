@@ -5,10 +5,16 @@ from datetime import datetime, timedelta
 from fastapi import HTTPException
 import jwt
 import logging
+import hashlib
 from passlib.context import CryptContext
 
-# تشفير كلمات المرور (bcrypt)
+# تشفير كلمات المرور (bcrypt) — bcrypt يقبل 72 بايت كحد أقصى، نستخدم SHA256 أولاً لتفادي المشكلة
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__rounds=12)
+
+
+def _prepare_password_for_bcrypt(password: str) -> str:
+    """تحويل كلمة المرور لـ 64 حرف (SHA256 hex) لضمان ألا تتجاوز حد bcrypt (72 بايت)."""
+    return hashlib.sha256(password.encode("utf-8")).hexdigest()
 
 # -----------------------------
 # Logging configuration
@@ -87,16 +93,25 @@ def verify_user_jwt_token(token: str) -> dict:
 
 
 def hash_password(password: str) -> str:
-    """تشفر كلمة المرور قبل الحفظ في قاعدة البيانات."""
-    return pwd_context.hash(password)
+    """تشفر كلمة المرور قبل الحفظ في قاعدة البيانات. تستخدم SHA256 قبل bcrypt لتجنب حد 72 بايت."""
+    prepared = _prepare_password_for_bcrypt(password)
+    return pwd_context.hash(prepared)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """تتحقق من تطابق كلمة المرور مع الهاش. تدعم الهاش المخزن أو النص العادي (للتوافق مع بيانات قديمة)."""
+    """تتحقق من تطابق كلمة المرور مع الهاش. تدعم الهاش القديم (مباشر) والجديد (SHA256 قبل bcrypt)."""
     if not hashed_password:
         return False
     if hashed_password.startswith("$2") or hashed_password.startswith("$b$"):
-        return pwd_context.verify(plain_password, hashed_password)
+        # الصيغة الجديدة: bcrypt(sha256(password))
+        prepared = _prepare_password_for_bcrypt(plain_password)
+        if pwd_context.verify(prepared, hashed_password):
+            return True
+        # التوافق مع كلمات المرور القديمة: bcrypt(password) مباشرة
+        try:
+            return pwd_context.verify(plain_password, hashed_password)
+        except Exception:
+            return False
     return plain_password == hashed_password
 
 

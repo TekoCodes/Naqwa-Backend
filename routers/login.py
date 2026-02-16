@@ -18,9 +18,9 @@ class LoginBody(BaseModel):
 @router.post("/login")
 def login(body: LoginBody):
     try:
-        phone_number = body.phone_number
-        email = body.email
-        password = body.password
+        phone_number = (body.phone_number or "").strip()
+        email = (body.email or "").strip()
+        password = (body.password or "").strip()
         if not phone_number and not email:
             return create_response(False, "Either phone_number or email must be provided", status_code=400)
         
@@ -54,7 +54,7 @@ def login(body: LoginBody):
                 logging.warning(f"Login failed: user not found for {identifier}")
                 return create_response(False, "Invalid credentials", status_code=401)
 
-            stored_password = user["password"] or ""
+            stored_password = (user["password"] or "").strip()
             if not verify_password(password, stored_password):
                 logging.warning(f"Login failed: incorrect password for {identifier}")
                 return create_response(False, "Invalid credentials", status_code=401)

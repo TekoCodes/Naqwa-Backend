@@ -18,8 +18,8 @@ class AdminLoginBody(BaseModel):
 def admin_login(body: AdminLoginBody):
     """تسجيل دخول الأدمن — يتحقق من جدول admins ويرجع توكن برول admin."""
     try:
-        phone_number = body.phone_number
-        password = body.password
+        phone_number = (body.phone_number or "").strip()
+        password = (body.password or "").strip()
         if not phone_number or not password:
             return create_response(False, "Phone number and password are required", status_code=400)
         try:
@@ -35,7 +35,8 @@ def admin_login(body: AdminLoginBody):
 
             if not admin:
                 return create_response(False, "Invalid credentials", status_code=401)
-            if not verify_password(password, admin["password"] or ""):
+            stored_password = (admin["password"] or "").strip()
+            if not verify_password(password, stored_password):
                 return create_response(False, "Invalid credentials", status_code=401)
 
             admin_id = admin["id"]

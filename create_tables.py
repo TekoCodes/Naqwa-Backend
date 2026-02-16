@@ -68,6 +68,52 @@ def create_grades_table():
         print(f"Error creating grades table: {e}")
         return False
 
+
+def add_created_by_to_grades():
+    """إضافة عمود created_by لجدول grades (يربط ب admins)."""
+    try:
+        with engine.begin() as connection:
+            connection.execute(text("""
+                ALTER TABLE public.grades
+                ADD COLUMN IF NOT EXISTS created_by INTEGER REFERENCES public.admins(id)
+            """))
+        logging.info("created_by added to grades or already exists")
+        return True
+    except Exception as e:
+        logging.error(f"Error adding created_by to grades: {e}")
+        return False
+
+
+def add_created_by_to_subjects():
+    """إضافة عمود created_by لجدول subjects (يربط ب admins)."""
+    try:
+        with engine.begin() as connection:
+            connection.execute(text("""
+                ALTER TABLE public.subjects
+                ADD COLUMN IF NOT EXISTS created_by INTEGER REFERENCES public.admins(id)
+            """))
+        logging.info("created_by added to subjects or already exists")
+        return True
+    except Exception as e:
+        logging.error(f"Error adding created_by to subjects: {e}")
+        return False
+
+
+def add_created_by_to_chapters():
+    """إضافة عمود created_by لجدول chapters (يربط ب admins)."""
+    try:
+        with engine.begin() as connection:
+            connection.execute(text("""
+                ALTER TABLE public.chapters
+                ADD COLUMN IF NOT EXISTS created_by INTEGER REFERENCES public.admins(id)
+            """))
+        logging.info("created_by added to chapters or already exists")
+        return True
+    except Exception as e:
+        logging.error(f"Error adding created_by to chapters: {e}")
+        return False
+
+
 def create_users_table():
     """Create users table if it doesn't exist"""
     try:
@@ -83,6 +129,7 @@ def create_users_table():
                     password VARCHAR(255) NOT NULL,
                     grade VARCHAR(50),
                     section VARCHAR(50),
+                    lang_type VARCHAR(50),
                     account_status VARCHAR(50) NOT NULL DEFAULT 'active',
                     points INTEGER DEFAULT 0,
                     early_access BOOLEAN DEFAULT FALSE,
@@ -97,9 +144,14 @@ def create_users_table():
                 CREATE INDEX IF NOT EXISTS idx_users_phone_number 
                 ON public.users(phone_number)
             """))
+            # إضافة عمود lang_type إن وُجد الجدول مسبقاً بدون العمود
+            connection.execute(text("""
+                ALTER TABLE public.users
+                ADD COLUMN IF NOT EXISTS lang_type VARCHAR(50)
+            """))
             
-        logging.info("Users table created or already exists")
-        print("Users table created or already exists")
+        logging.info("Users table created or already exists (lang_type column ensured)")
+        print("Users table created or already exists (lang_type column ensured)")
         return True
     except Exception as e:
         logging.error(f"Error creating users table: {e}")
@@ -430,12 +482,38 @@ def create_exam_choises_table():
     except Exception as e:
         logging.error(f"Error creating exam_choises table: {e}")
         print(f"Error creating exam_choises table: {e}")
+
+
+def create_site_settings_table():
+    """جدول إعدادات الموقع (مثلاً وضع تحت الإنشاء للطلبة)."""
+    try:
+        with engine.begin() as connection:
+            connection.execute(text("""
+                CREATE TABLE IF NOT EXISTS public.site_settings (
+                    key VARCHAR(100) PRIMARY KEY,
+                    value TEXT NOT NULL
+                )
+            """))
+            connection.execute(text("""
+                INSERT INTO public.site_settings (key, value) VALUES ('under_construction', 'true')
+                ON CONFLICT (key) DO NOTHING
+            """))
+        logging.info("site_settings table created or already exists")
+        print("site_settings table created or already exists")
+    except Exception as e:
+        logging.error(f"Error creating site_settings table: {e}")
+        print(f"Error creating site_settings table: {e}")
+
+
 create_grades_table()
 create_users_table()
 create_sessions_table()
 create_admins_table()  # Call this to ensure admins table exists
+add_created_by_to_grades()
 create_subjects_table()
+add_created_by_to_subjects()
 create_chapters_table()
+add_created_by_to_chapters()
 create_sources_table()
 create_questions_table()
 create_question_reports_table()
@@ -445,3 +523,4 @@ create_exams_table()  # Call this to ensure exams table exists
 create_exams_questions_table()  # Call this to ensure exams_questions table exists
 create_exams_submissions_table()  # Call this to ensure exams_submissions table exists
 create_exam_choises_table()  # Call this to ensure exam_choises table exists
+create_site_settings_table()

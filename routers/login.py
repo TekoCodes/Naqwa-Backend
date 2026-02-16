@@ -1,21 +1,32 @@
 # login.py
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
+from pydantic import BaseModel
 from sqlalchemy import text
 from datetime import datetime
 import logging
-from .users_common import engine, create_user_jwt_token, validate_phone_number, create_response
+from .users_common import engine, create_user_jwt_token, validate_phone_number, create_response, verify_password, hash_password
 
 router = APIRouter()
 
+
+class LoginBody(BaseModel):
+    phone_number: str | None = None
+    email: str | None = None
+    password: str
+
+
 @router.post("/login")
-def login(phone_number: str = None, email: str = None, password: str = None):
+def login(body: LoginBody):
     try:
+        phone_number = body.phone_number
+        email = body.email
+        password = body.password
         if not phone_number and not email:
             return create_response(False, "Either phone_number or email must be provided", status_code=400)
         
         if not password:
             return create_response(False, "Password is required", status_code=400)
-        
+
         # Validate and normalize phone_number if provided
         if phone_number:
             try:
@@ -43,9 +54,24 @@ def login(phone_number: str = None, email: str = None, password: str = None):
                 logging.warning(f"Login failed: user not found for {identifier}")
                 return create_response(False, "Invalid credentials", status_code=401)
 
-            if password != user["password"]:
+            stored_password = user["password"] or ""
+            if not verify_password(password, stored_password):
                 logging.warning(f"Login failed: incorrect password for {identifier}")
                 return create_response(False, "Invalid credentials", status_code=401)
+
+            # ترقية كلمة مرور قديمة (نص عادي) إلى هاش عند أول دخول ناجح
+            if not (stored_password.startswith("$2") or stored_password.startswith("$b$")):
+                with engine.begin() as upgrade_conn:
+                    if phone_number:
+                        upgrade_conn.execute(
+                            text("UPDATE public.users SET password = :hashed WHERE id = :user_id"),
+                            {"hashed": hash_password(password), "user_id": user["id"]}
+                        )
+                    else:
+                        upgrade_conn.execute(
+                            text("UPDATE public.users SET password = :hashed WHERE id = :user_id"),
+                            {"hashed": hash_password(password), "user_id": user["id"]}
+                        )
 
             # Get user_id and created_at from user
             user_id = user["id"]

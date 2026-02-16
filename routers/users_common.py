@@ -5,6 +5,10 @@ from datetime import datetime, timedelta
 from fastapi import HTTPException
 import jwt
 import logging
+from passlib.context import CryptContext
+
+# تشفير كلمات المرور (bcrypt)
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__rounds=12)
 
 # -----------------------------
 # Logging configuration
@@ -43,12 +47,12 @@ def create_jwt_token(email):
 def create_user_jwt_token(user_id: int, created_at: datetime, role: str = "user"):
     """
     Create JWT token containing user_id, created_at, and role
-    
+
     Args:
         user_id: User ID
         created_at: Account creation timestamp
         role: User role (default: "user")
-    
+
     Returns:
         JWT token string
     """
@@ -62,6 +66,39 @@ def create_user_jwt_token(user_id: int, created_at: datetime, role: str = "user"
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
     logging.info(f"JWT token created for user_id: {user_id}, role: {role}")
     return token
+
+
+def verify_user_jwt_token(token: str) -> dict:
+    """
+    Verify JWT token and return payload (user_id, role, created_at).
+    Raises ValueError if token is invalid or expired.
+    """
+    if not token:
+        raise ValueError("Token is required")
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        if "user_id" not in payload:
+            raise ValueError("Invalid token payload")
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise ValueError("Token has expired")
+    except jwt.InvalidTokenError:
+        raise ValueError("Invalid token")
+
+
+def hash_password(password: str) -> str:
+    """تشفر كلمة المرور قبل الحفظ في قاعدة البيانات."""
+    return pwd_context.hash(password)
+
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """تتحقق من تطابق كلمة المرور مع الهاش. تدعم الهاش المخزن أو النص العادي (للتوافق مع بيانات قديمة)."""
+    if not hashed_password:
+        return False
+    if hashed_password.startswith("$2") or hashed_password.startswith("$b$"):
+        return pwd_context.verify(plain_password, hashed_password)
+    return plain_password == hashed_password
+
 
 # Function to create standardized response with status code
 def create_response(success: bool, message: str, data: dict = None, status_code: int = 200):

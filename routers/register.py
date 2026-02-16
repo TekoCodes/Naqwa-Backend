@@ -1,28 +1,39 @@
 # register.py
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
+from pydantic import BaseModel
 from sqlalchemy import text
 from datetime import datetime
 import logging
-from .users_common import engine, validate_phone_number, validate_governorate, create_user_jwt_token, create_response
+from .users_common import engine, validate_phone_number, validate_governorate, create_user_jwt_token, create_response, hash_password
 
 router = APIRouter()
 
+
+class RegisterBody(BaseModel):
+    name: str
+    phone_number: str
+    parent_number: str
+    password: str
+    birth_date: str
+    governorate: str
+    grade: str
+    section: str
+    lang_type: str
+
+
 @router.post("/register")
-def add_user(
-    name: str = None,
-    phone_number: str = None,
-    password: str = None,
-    parent_number: str = None,
-    birth_date: str = None,
-    governorate: str = None,
-    grade: str = None,
-    section: str = None,
-    account_status: str = "active",
-    points: int = 0,
-    early_access: bool = False,
-    subscription_plan: str = None,
-):
+def add_user(body: RegisterBody):
     try:
+        name = body.name
+        phone_number = body.phone_number
+        password = body.password
+        parent_number = body.parent_number
+        birth_date = body.birth_date
+        governorate = body.governorate
+        grade = body.grade
+        section = body.section
+        lang_type = body.lang_type
+
         # Validate required fields - collect all missing fields
         missing_fields = []
         if not name:
@@ -37,10 +48,15 @@ def add_user(
             missing_fields.append("birth_date")
         if not governorate:
             missing_fields.append("governorate")
-        if not grade or grade not in ["third secondary"]:
+        valid_grades = ["S1", "S2", "S3"]
+        if not grade or grade not in valid_grades:
             missing_fields.append("grade")
-        if not section:
+        valid_sections = ["علمي رياضه", "علمي علوم", "ادبي"]
+        if not section or section not in valid_sections:
             missing_fields.append("section")
+        valid_lang_types = ["عربي", "لغات"]
+        if not lang_type or lang_type not in valid_lang_types:
+            missing_fields.append("lang_type")
         
         # Return error with all missing fields
         if missing_fields:
@@ -64,6 +80,9 @@ def add_user(
             governorate = validate_governorate(governorate, "governorate")
         except ValueError as e:
             return create_response(False, str(e), status_code=400)
+
+        # تشفير كلمة المرور قبل الحفظ
+        password = hash_password(password)
         
         # Parse birth_date
         try:
@@ -92,12 +111,12 @@ def add_user(
                     text("""
                         INSERT INTO public.users (
                             name, phone_number, parent_number, birth_date, governorate,
-                            password, grade, section, account_status, points,
+                            password, grade, section, lang_type, account_status, points,
                             early_access, subscription_plan, created_at
                         )
                         VALUES (
                             :name, :phone_number, :parent_number, :birth_date, :governorate,
-                            :password, :grade, :section, :account_status, :points,
+                            :password, :grade, :section, :lang_type, :account_status, :points,
                             :early_access, :subscription_plan, :created_at
                         )
                         RETURNING id
@@ -111,10 +130,11 @@ def add_user(
                         "password": password,
                         "grade": grade,
                         "section": section,
-                        "account_status": account_status,
-                        "points": points,
-                        "early_access": early_access,
-                        "subscription_plan": subscription_plan,
+                        "lang_type": lang_type,
+                        "account_status": "active",
+                        "points": 0,
+                        "early_access": False,
+                        "subscription_plan": None,
                         "created_at": created_at
                     }
                 )

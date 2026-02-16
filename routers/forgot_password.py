@@ -1,21 +1,34 @@
 # forgot_password.py
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
+from pydantic import BaseModel
 from sqlalchemy import text
 from datetime import datetime
 import logging
-from .users_common import engine, validate_phone_number, create_response
+from .users_common import engine, validate_phone_number, create_response, hash_password
 
 router = APIRouter()
 
+
+class ForgotPasswordBody(BaseModel):
+    phone_number: str | None = None
+    email: str | None = None
+    otp: str
+    new_password: str
+
+
 @router.post("/forgot-password")
-def forgot_password(phone_number: str = None, email: str = None, otp: str = None, new_password: str = None):
+def forgot_password(body: ForgotPasswordBody):
     try:
+        phone_number = body.phone_number
+        email = body.email
+        otp = body.otp
+        new_password = body.new_password
         if not phone_number and not email:
             return create_response(False, "Either phone_number or email must be provided", status_code=400)
         
         if not otp:
             return create_response(False, "OTP is required", status_code=400)
-        
+
         if not new_password:
             return create_response(False, "New password is required", status_code=400)
         
@@ -68,7 +81,8 @@ def forgot_password(phone_number: str = None, email: str = None, otp: str = None
                     logging.warning(f"Invalid or expired OTP for forgot password: {email}")
                     return create_response(False, "Invalid or expired OTP code. Please request a new OTP.", status_code=400)
         
-        # OTP is valid, update password
+        # OTP is valid, hash and update password
+        new_password_hashed = hash_password(new_password)
         with engine.begin() as connection:  # commit automatically
             # Mark OTP as used if email was provided
             if email:
@@ -85,7 +99,7 @@ def forgot_password(phone_number: str = None, email: str = None, otp: str = None
                     }
                 )
             
-            # Update user password
+            # Update user password (مشفر)
             if phone_number:
                 connection.execute(
                     text("""
@@ -95,7 +109,7 @@ def forgot_password(phone_number: str = None, email: str = None, otp: str = None
                     """),
                     {
                         "phone_number": phone_number,
-                        "new_password": new_password
+                        "new_password": new_password_hashed
                     }
                 )
             else:
@@ -107,7 +121,7 @@ def forgot_password(phone_number: str = None, email: str = None, otp: str = None
                     """),
                     {
                         "email": email,
-                        "new_password": new_password
+                        "new_password": new_password_hashed
                     }
                 )
         logging.info(f"Password updated successfully for {identifier}")

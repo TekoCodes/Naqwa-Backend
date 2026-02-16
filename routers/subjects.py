@@ -105,6 +105,60 @@ def get_available_subjects(authorization: str = Header(None)):
         return create_response(False, f"An error occurred: {str(e)}", status_code=500)
 
 
+@router.get("/subjects/with-counts")
+def get_subjects_with_counts(authorization: str = Header(None)):
+    """
+    المواد المتاحة لصف الطالب مع أعداد: الشاباتر، الأسئلة المنفردة، الامتحانات.
+    يتطلب: Authorization: Bearer <token>
+    """
+    try:
+        user_id, result = decode_token_and_get_user(authorization)
+        if not user_id:
+            return result
+        user = result
+        grade = user.get("grade")
+        if not grade:
+            return create_response(False, "User grade not configured", status_code=400)
+
+        with engine.connect() as connection:
+            subjects = connection.execute(
+                text("""
+                    SELECT s.id, s.name, s.grade, s.stream,
+                        (SELECT COUNT(*) FROM public.chapters c WHERE c.subject_id = s.id) AS chapters_count,
+                        (SELECT COUNT(*) FROM public.questions q WHERE q.subject_id = s.id AND q.status = 'active') AS questions_count,
+                        (SELECT COUNT(DISTINCT eq.exam_id) FROM public.exams_questions eq
+                         JOIN public.exams e ON e.id = eq.exam_id
+                         WHERE eq.subject_id = s.id AND e.is_active = true) AS exams_count
+                    FROM public.subjects s
+                    WHERE s.grade = :grade
+                    ORDER BY s.name
+                """),
+                {"grade": grade},
+            ).mappings().fetchall()
+
+            subjects_list = [
+                {
+                    "id": s["id"],
+                    "name": s["name"] or "",
+                    "grade": s["grade"] or "",
+                    "stream": s["stream"] or "",
+                    "chapters_count": s["chapters_count"] or 0,
+                    "questions_count": s["questions_count"] or 0,
+                    "exams_count": s["exams_count"] or 0,
+                }
+                for s in subjects
+            ]
+            return create_response(
+                True,
+                "Subjects with counts",
+                {"subjects": subjects_list, "grade": grade, "count": len(subjects_list)},
+                status_code=200,
+            )
+    except Exception as e:
+        logging.error(f"Error in get_subjects_with_counts: {str(e)}")
+        return create_response(False, str(e), status_code=500)
+
+
 @router.get("/subjects/{subject_id}/chapters")
 def get_subject_chapters(subject_id: int, authorization: str = Header(None)):
     """

@@ -124,3 +124,142 @@
 2026-02-14 14:58:22,954 - INFO - exams_questions table created or already exists
 2026-02-14 14:58:23,147 - INFO - exams_submissions table created or already exists
 2026-02-14 14:58:23,361 - INFO - exam_choises table created or already exists
+2026-02-16 00:04:33,108 - INFO - Grades table created or already exists
+2026-02-16 00:04:33,535 - INFO - Users table created or already exists
+2026-02-16 00:04:33,981 - INFO - Sessions table created or already exists
+2026-02-16 00:04:34,392 - INFO - Admins table created or already exists
+2026-02-16 00:04:34,654 - INFO - Subjects table created or already exists
+2026-02-16 00:04:34,992 - INFO - Chapters table created or already exists
+2026-02-16 00:04:35,326 - INFO - Sources table created or already exists
+2026-02-16 00:04:35,565 - INFO - Questions table created or already exists
+2026-02-16 00:04:35,787 - INFO - Question reports table created or already exists
+2026-02-16 00:04:36,022 - INFO - question_choices table created or already exists
+2026-02-16 00:04:36,244 - INFO - questions_submissions table created or already exists
+2026-02-16 00:04:36,468 - INFO - exams table created or already exists
+2026-02-16 00:04:36,685 - INFO - exams_questions table created or already exists
+2026-02-16 00:04:36,919 - INFO - exams_submissions table created or already exists
+2026-02-16 00:04:37,145 - INFO - exam_choises table created or already exists
+2026-02-16 00:05:09,890 - INFO - Grades table created or already exists
+2026-02-16 00:05:10,396 - INFO - Users table created or already exists (lang_type column ensured)
+2026-02-16 00:05:10,831 - INFO - Sessions table created or already exists
+2026-02-16 00:05:11,093 - INFO - Admins table created or already exists
+2026-02-16 00:05:11,411 - INFO - Subjects table created or already exists
+2026-02-16 00:05:11,649 - INFO - Chapters table created or already exists
+2026-02-16 00:05:11,911 - INFO - Sources table created or already exists
+2026-02-16 00:05:12,167 - INFO - Questions table created or already exists
+2026-02-16 00:05:12,483 - INFO - Question reports table created or already exists
+2026-02-16 00:05:12,751 - INFO - question_choices table created or already exists
+2026-02-16 00:05:12,971 - INFO - questions_submissions table created or already exists
+2026-02-16 00:05:13,209 - INFO - exams table created or already exists
+2026-02-16 00:05:13,465 - INFO - exams_questions table created or already exists
+2026-02-16 00:05:13,771 - INFO - exams_submissions table created or already exists
+2026-02-16 00:05:14,005 - INFO - exam_choises table created or already exists
+2026-02-16 00:05:19,853 - INFO - Grades table created or already exists
+2026-02-16 00:05:20,218 - INFO - Users table created or already exists (lang_type column ensured)
+2026-02-16 00:05:20,673 - INFO - Sessions table created or already exists
+2026-02-16 00:05:20,905 - INFO - Admins table created or already exists
+2026-02-16 00:05:21,171 - INFO - Subjects table created or already exists
+2026-02-16 00:05:21,407 - INFO - Chapters table created or already exists
+2026-02-16 00:05:21,666 - INFO - Sources table created or already exists
+2026-02-16 00:05:21,899 - INFO - Questions table created or already exists
+2026-02-16 00:05:22,129 - INFO - Question reports table created or already exists
+2026-02-16 00:05:22,377 - INFO - question_choices table created or already exists
+2026-02-16 00:05:22,735 - INFO - questions_submissions table created or already exists
+2026-02-16 00:05:22,961 - INFO - exams table created or already exists
+2026-02-16 00:07:55,143 - ERROR - Form data requires "python-multipart" to be installed. 
+You can install "python-multipart" with: 
+
+pip install python-multipart
+
+2026-02-16 00:08:01,152 - ERROR - Form data requires "python-multipart" to be installed. 
+You can install "python-multipart" with: 
+
+pip install python-multipart
+
+2026-02-16 00:08:07,191 - ERROR - Form data requires "python-multipart" to be installed. 
+You can install "python-multipart" with: 
+
+pip install python-multipart
+
+2026-02-16 00:09:29,895 - ERROR - Form data requires "python-multipart" to be installed. 
+You can install "python-multipart" with: 
+
+pip install python-multipart
+
+2026-02-16 00:18:05,267 - INFO - Add user attempt: 01140780914
+2026-02-16 00:18:07,812 - INFO - JWT token created for user_id: 1, role: user
+2026-02-16 00:18:08,170 - INFO - User added successfully: 01140780914, user_id: 1
+2026-02-16 00:18:50,162 - INFO - Login attempt for phone: 01140780914 or email: None
+2026-02-16 00:18:50,325 - INFO - JWT token created for user_id: 1, role: user
+2026-02-16 00:18:50,557 - INFO - Login successful for 01140780914, user_id: 1
+2026-02-16 01:13:00,188 - INFO - Login attempt for phone: 01140780914 or email: None
+2026-02-16 01:13:04,998 - INFO - JWT token created for user_id: 1, role: user
+2026-02-16 01:13:11,215 - INFO - Login successful for 01140780914, user_id: 1
+2026-02-16 01:50:05,318 - INFO - Login attempt for phone: 01140780914 or email: None
+2026-02-16 01:50:07,070 - INFO - JWT token created for user_id: 1, role: user
+2026-02-16 01:50:07,970 - INFO - Login successful for 01140780914, user_id: 1
+2026-02-16 02:50:53,938 - INFO - Login attempt for phone: 01140780914 or email: None
+2026-02-16 02:50:55,157 - INFO - JWT token created for user_id: 1, role: user
+2026-02-16 02:50:55,879 - INFO - Login successful for 01140780914, user_id: 1
+2026-02-16 03:13:24,068 - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "E:\anaconda3\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-02-16 03:13:24,320 - INFO - Add user attempt: 01234567890
+2026-02-16 03:13:26,407 - INFO - JWT token created for user_id: 2, role: user
+2026-02-16 03:13:26,648 - INFO - User added successfully: 01234567890, user_id: 2
+2026-02-16 03:15:16,778 - INFO - Login attempt for phone: 01234567890 or email: None
+2026-02-16 03:15:17,143 - INFO - JWT token created for user_id: 2, role: user
+2026-02-16 03:15:17,396 - INFO - Login successful for 01234567890, user_id: 2
+2026-02-16 03:18:59,016 - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "E:\anaconda3\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-02-16 03:18:59,260 - INFO - JWT token created for user_id: 1, role: admin
+2026-02-16 03:31:13,272 - INFO - Grades table created or already exists
+2026-02-16 03:31:13,621 - INFO - Users table created or already exists (lang_type column ensured)
+2026-02-16 03:31:13,974 - INFO - Sessions table created or already exists
+2026-02-16 03:31:14,202 - INFO - Admins table created or already exists
+2026-02-16 03:31:14,469 - INFO - created_by added to grades or already exists
+2026-02-16 03:31:14,690 - INFO - Subjects table created or already exists
+2026-02-16 03:31:14,913 - INFO - Chapters table created or already exists
+2026-02-16 03:31:15,136 - INFO - Sources table created or already exists
+2026-02-16 03:31:15,433 - INFO - Questions table created or already exists
+2026-02-16 03:31:15,668 - INFO - Question reports table created or already exists
+2026-02-16 03:31:15,901 - INFO - question_choices table created or already exists
+2026-02-16 03:31:16,218 - INFO - questions_submissions table created or already exists
+2026-02-16 03:31:16,576 - INFO - exams table created or already exists
+2026-02-16 03:31:17,012 - INFO - exams_questions table created or already exists
+2026-02-16 03:31:17,475 - INFO - exams_submissions table created or already exists
+2026-02-16 03:31:17,766 - INFO - exam_choises table created or already exists
+2026-02-16 04:11:22,081 - INFO - Grades table created or already exists
+2026-02-16 04:11:22,477 - INFO - Users table created or already exists (lang_type column ensured)
+2026-02-16 04:11:22,840 - INFO - Sessions table created or already exists
+2026-02-16 04:11:23,103 - INFO - Admins table created or already exists
+2026-02-16 04:11:23,319 - INFO - created_by added to grades or already exists
+2026-02-16 04:11:23,635 - INFO - Subjects table created or already exists
+2026-02-16 04:11:23,889 - INFO - created_by added to subjects or already exists
+2026-02-16 04:11:24,115 - INFO - Chapters table created or already exists
+2026-02-16 04:11:24,367 - INFO - created_by added to chapters or already exists
+2026-02-16 04:11:24,596 - INFO - Sources table created or already exists
+2026-02-16 04:11:24,825 - INFO - Questions table created or already exists
+2026-02-16 04:11:25,074 - INFO - Question reports table created or already exists
+2026-02-16 04:11:25,304 - INFO - question_choices table created or already exists
+2026-02-16 04:11:25,529 - INFO - questions_submissions table created or already exists
+2026-02-16 04:11:25,747 - INFO - exams table created or already exists
+2026-02-16 04:11:25,964 - INFO - exams_questions table created or already exists
+2026-02-16 04:11:26,179 - INFO - exams_submissions table created or already exists
+2026-02-16 04:11:26,398 - INFO - exam_choises table created or already exists
+2026-02-16 04:14:31,946 - INFO - Login attempt for phone: 01140780914 or email: None
+2026-02-16 04:14:33,332 - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "E:\anaconda3\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-02-16 04:14:33,567 - INFO - JWT token created for user_id: 1, role: user
+2026-02-16 04:14:34,177 - INFO - Login successful for 01140780914, user_id: 1

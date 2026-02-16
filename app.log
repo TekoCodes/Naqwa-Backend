@@ -263,3 +263,22 @@ Traceback (most recent call last):
 AttributeError: module 'bcrypt' has no attribute '__about__'
 2026-02-16 04:14:33,567 - INFO - JWT token created for user_id: 1, role: user
 2026-02-16 04:14:34,177 - INFO - Login successful for 01140780914, user_id: 1
+2026-02-16 04:20:31,673 - INFO - Grades table created or already exists
+2026-02-16 04:20:32,088 - INFO - Users table created or already exists (lang_type column ensured)
+2026-02-16 04:20:32,541 - INFO - Sessions table created or already exists
+2026-02-16 04:20:32,754 - INFO - Admins table created or already exists
+2026-02-16 04:20:32,971 - INFO - created_by added to grades or already exists
+2026-02-16 04:20:33,180 - INFO - Subjects table created or already exists
+2026-02-16 04:20:33,431 - INFO - created_by added to subjects or already exists
+2026-02-16 04:20:33,649 - INFO - Chapters table created or already exists
+2026-02-16 04:20:33,904 - INFO - created_by added to chapters or already exists
+2026-02-16 04:20:34,111 - INFO - Sources table created or already exists
+2026-02-16 04:20:34,338 - INFO - Questions table created or already exists
+2026-02-16 04:20:34,576 - INFO - Question reports table created or already exists
+2026-02-16 04:20:34,844 - INFO - question_choices table created or already exists
+2026-02-16 04:20:35,065 - INFO - questions_submissions table created or already exists
+2026-02-16 04:20:35,308 - INFO - exams table created or already exists
+2026-02-16 04:20:35,545 - INFO - exams_questions table created or already exists
+2026-02-16 04:20:35,782 - INFO - exams_submissions table created or already exists
+2026-02-16 04:20:35,991 - INFO - exam_choises table created or already exists
+2026-02-16 04:20:36,309 - INFO - site_settings table created or already exists

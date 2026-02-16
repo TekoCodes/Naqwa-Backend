@@ -282,3 +282,15 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 2026-02-16 04:20:35,782 - INFO - exams_submissions table created or already exists
 2026-02-16 04:20:35,991 - INFO - exam_choises table created or already exists
 2026-02-16 04:20:36,309 - INFO - site_settings table created or already exists
+2026-02-16 04:30:28,756 - INFO - Login attempt for phone: 01140780914 or email: None
+2026-02-16 04:30:30,527 - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "E:\anaconda3\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-02-16 04:30:31,086 - INFO - JWT token created for user_id: 1, role: user
+2026-02-16 04:30:31,914 - INFO - Login successful for 01140780914, user_id: 1
+2026-02-16 04:30:43,317 - INFO - Login attempt for phone: 01140780914 or email: None
+2026-02-16 04:30:43,859 - INFO - JWT token created for user_id: 1, role: user
+2026-02-16 04:30:44,082 - INFO - Login successful for 01140780914, user_id: 1
